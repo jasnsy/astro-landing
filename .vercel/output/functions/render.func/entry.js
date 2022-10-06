@@ -2078,164 +2078,16 @@ const $$module5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty(
   url: $$url$7
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const defaultOptions$1 = {
-  outputDir: "public/assets/images",
-  urlPath: "/assets/images"
-};
-function generateImage(src, options) {
-  const settings = Object.assign(defaultOptions$1, options);
-  (async () => {
-    await Image__default(src, settings);
-  })();
-  return Image__default.statsSync(src, settings);
-}
-
-const $$module2$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  generateImage
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const cjs = createRequire(import.meta.url);
-const sharp = cjs("sharp");
-const DataURIParser = cjs("datauri/parser");
-const cache = {};
-const defaultOptions = {
-  quality: 60,
-  outputDir: "src/assets/placeholders"
-};
-async function generatePlaceholder(src, options = defaultOptions) {
-  options = Object.assign({}, defaultOptions, options);
-  options.outputDir = options.outputDir.endsWith("/") ? options.outputDir : options.outputDir + "/";
-  const hash = getHash({ path: src, options });
-  try {
-    const existingFile = readFileSync(options.outputDir + hash + ".placeholder", {
-      encoding: "utf-8"
-    });
-    return JSON.parse(existingFile);
-  } catch (err) {
-    if (err.code === "ENOENT") {
-      return await getDataURI(src, hash, options);
-    }
-  }
-}
-function getHash(options) {
-  const hash = createHash("sha256");
-  hash.update(JSON.stringify(options));
-  return hash.digest("base64url").substring(0, 5);
-}
-async function getDataURI(src, hash, options) {
-  if (cache[src] && cache[src].quality === options.quality) {
-    return cache[src];
-  }
-  const image = await sharp(src);
-  const imageMetadata = await image.metadata();
-  const placeholderDimension = getBitmapDimensions(imageMetadata.width, imageMetadata.height, options.quality);
-  const buffer = await image.rotate().resize(placeholderDimension.width, placeholderDimension.height).png().toBuffer();
-  const parser = new DataURIParser();
-  const data = {
-    dataURI: parser.format(".png", buffer).content,
-    width: imageMetadata.width,
-    height: imageMetadata.height,
-    quality: options.quality
-  };
-  cache[src] = data;
-  mkdir(options.outputDir, { recursive: true }, (err) => {
-    if (err) {
-      console.error(err);
-    }
-    writeFile(options.outputDir + hash + ".placeholder", JSON.stringify(data), (err2) => {
-      if (err2) {
-        console.error(err2);
-      }
-    });
-  });
-  return data;
-}
-function getBitmapDimensions(imgWidth, imgHeight, pixelTarget) {
-  const ratioWH = imgWidth / imgHeight;
-  let bitmapHeight = pixelTarget / ratioWH;
-  bitmapHeight = Math.sqrt(bitmapHeight);
-  const bitmapWidth = pixelTarget / bitmapHeight;
-  return { width: Math.round(bitmapWidth), height: Math.round(bitmapHeight) };
-}
-
-const $$module3$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  generatePlaceholder
-}, Symbol.toStringTag, { value: 'Module' }));
-
-createMetadata("/@fs/Users/jason/Workspace/astro-landing/node_modules/astro-eleventy-img/src/Image.astro", { modules: [{ module: Image, specifier: "@11ty/eleventy-img", assert: {} }, { module: $$module2$3, specifier: "./main", assert: {} }, { module: $$module3$1, specifier: "./placeholder", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
-const $$Astro$7 = createAstro("/@fs/Users/jason/Workspace/astro-landing/node_modules/astro-eleventy-img/src/Image.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
-const $$Image = createComponent(async ($$result, $$props, $$slots) => {
-  const Astro2 = $$result.createAstro($$Astro$7, $$props, $$slots);
-  Astro2.self = $$Image;
-  const { src, alt, caption, options = {}, sizes = "", classes = void 0, quality = 90, placeholderOptions = {} } = Astro2.props;
-  const image = generateImage(
-    src,
-    Object.assign(options, {
-      widths: [null],
-      formats: ["avif", "webp", "png"],
-      sharpWebpOptions: {
-        quality
-      },
-      sharpAvifOptions: {
-        quality
-      }
-    })
-  );
-  const placeHolder = await generatePlaceholder(src, placeholderOptions);
-  const imageAttributes = {
-    alt,
-    sizes,
-    loading: "lazy",
-    decoding: "async",
-    style: `background-size: cover;background-image:url(${placeHolder?.dataURI})`,
-    onload: `this.style.backgroundImage='none'`
-  };
-  const html = Image__default.generateHTML(image, imageAttributes);
-  const props = {
-    class: classes
-  };
-  return renderTemplate`${maybeRenderHead($$result)}<figure${spreadAttributes(props)}>
-	${renderComponent($$result, "Fragment", Fragment, {}, { "default": () => renderTemplate`${markHTMLString(html)}` })}
-	${caption && renderTemplate`<figcaption>${caption}</figcaption>`}
-</figure>`;
-});
-
-const $$module1$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  generateImage,
-  generatePlaceholder,
-  Image: $$Image
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const $$metadata$6 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase-card.astro", { modules: [{ module: $$module1$1, specifier: "astro-eleventy-img", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
-const $$Astro$6 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase-card.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
+const $$metadata$6 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase-card.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$7 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase-card.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
 const $$ShowcaseCard = createComponent(async ($$result, $$props, $$slots) => {
-  const Astro2 = $$result.createAstro($$Astro$6, $$props, $$slots);
+  const Astro2 = $$result.createAstro($$Astro$7, $$props, $$slots);
   Astro2.self = $$ShowcaseCard;
   const { title, image, url } = Astro2.props;
-  const widths = [450, 800];
-  const sizes = "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw";
-  const { webp, avif, png } = generateImage(image, {
-    widths,
-    formats: ["webp", "avif", "png"],
-    outputDir: "public/assets/images/showcase",
-    urlPath: "/assets/images/showcase"
-  });
-  const avifSrcset = avif.map(({ srcset }) => srcset).join(",");
-  const webpSrcset = webp.map(({ srcset }) => srcset).join(",");
-  const pngSrcset = png.map(({ srcset }) => srcset).join(",");
-  const placeholder = await generatePlaceholder(image, {
-    outputDir: "src/assets/placeholders/showcase"
-  });
   return renderTemplate`${maybeRenderHead($$result)}<a class="group aspect-video hover:!text-default"${addAttribute(url, "href")} target="_blank">
   <figure class="relative w-full h-full overflow-hidden">
     <picture>
-      <source type="image/avif"${addAttribute(avifSrcset, "srcset")}${addAttribute(sizes, "sizes")}>
-      <source type="image/webp"${addAttribute(webpSrcset, "srcset")}${addAttribute(sizes, "sizes")}>
-      <source type="image/png"${addAttribute(pngSrcset, "srcset")}${addAttribute(sizes, "sizes")}>
-      <img class="object-cover w-full h-full transition-all duration-300 bg-cover group-hover:scale-110 group-hover:opacity-20 group-focus:scale-110 group-focus:opacity-20"${addAttribute(png[0].url, "src")}${addAttribute(png[0].width, "width")}${addAttribute(png[0].height, "height")} loading="lazy" decoding="async" onload="this.style.backgroundImage='none'"${addAttribute(`background-image: url(${placeholder.dataURI});`, "style")}${addAttribute(`A screenshot of ${url}`, "alt")}>
+      <img class="object-cover w-full h-full transition-all duration-300 bg-cover group-hover:scale-110 group-hover:opacity-20 group-focus:scale-110 group-focus:opacity-20"${addAttribute(image, "src")} loading="lazy" decoding="async" onload="this.style.backgroundImage='none'"${addAttribute(`background-image: url(${image})`, "style")}${addAttribute(`A screenshot of ${url}`, "alt")}>
     </picture>
     <figcaption class="absolute inset-0">
       <div class="flex flex-col items-center justify-center h-full gap-2 transition-all duration-300 opacity-0 group-hover:opacity-100 group-focus:opacity-100">
@@ -2252,7 +2104,7 @@ const $$ShowcaseCard = createComponent(async ($$result, $$props, $$slots) => {
 const $$file$6 = "/Users/jason/Workspace/astro-landing/src/components/showcase-card.astro";
 const $$url$6 = undefined;
 
-const $$module2$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const $$module2$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   $$metadata: $$metadata$6,
   default: $$ShowcaseCard,
@@ -2263,25 +2115,25 @@ const $$module2$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
 const sites = [
 	{
 		title: "Wordle Clone",
-		image: "src/data/showcase/images/werdle.png",
+		image: "https://jsyimages.s3.us-west-2.amazonaws.com/werdle.png",
 		url: "https://jasnsy.github.io/werdle/"
 	},
 	{
 		title: "TypeScript TicTacToe",
-		image: "src/data/showcase/images/tictactoe.png",
+		image: "https://jsyimages.s3.us-west-2.amazonaws.com/tictactoe.png",
 		url: "https://github.com/jasnsy/tic-tac-toe"
 	}
 ];
 
-const $$module3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const $$module3$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: sites
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const $$metadata$5 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase.astro", { modules: [{ module: $$module1$5, specifier: "~/components/content-section.astro", assert: {} }, { module: $$module2$2, specifier: "~/components/showcase-card.astro", assert: {} }, { module: $$module3, specifier: "~/data/showcase/sites.json", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
-const $$Astro$5 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
+const $$metadata$5 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase.astro", { modules: [{ module: $$module1$5, specifier: "~/components/content-section.astro", assert: {} }, { module: $$module2$3, specifier: "~/components/showcase-card.astro", assert: {} }, { module: $$module3$1, specifier: "~/data/showcase/sites.json", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$6 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/showcase.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
 const $$Showcase = createComponent(async ($$result, $$props, $$slots) => {
-  const Astro2 = $$result.createAstro($$Astro$5, $$props, $$slots);
+  const Astro2 = $$result.createAstro($$Astro$6, $$props, $$slots);
   Astro2.self = $$Showcase;
   return renderTemplate`${renderComponent($$result, "ContentSection", $$ContentSection, { "title": "Projects", "id": "projects" }, { "default": () => renderTemplate`${maybeRenderHead($$result)}<div class="max-w-6xl space-y-2">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -2403,9 +2255,9 @@ const $$metadata$4 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/sr
     rafId = requestAnimationFrame(frame);
   }
 ` }] });
-const $$Astro$4 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/starfield.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
+const $$Astro$5 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/starfield.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
 const $$Starfield = createComponent(async ($$result, $$props, $$slots) => {
-  const Astro2 = $$result.createAstro($$Astro$4, $$props, $$slots);
+  const Astro2 = $$result.createAstro($$Astro$5, $$props, $$slots);
   Astro2.self = $$Starfield;
   return renderTemplate`${maybeRenderHead($$result)}<div id="starfield" class="absolute inset-0">
   <canvas id="starfield-canvas"></canvas>
@@ -2417,7 +2269,7 @@ const $$Starfield = createComponent(async ($$result, $$props, $$slots) => {
 const $$file$4 = "/Users/jason/Workspace/astro-landing/src/components/starfield.astro";
 const $$url$4 = undefined;
 
-const $$module1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const $$module1$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   $$metadata: $$metadata$4,
   default: $$Starfield,
@@ -2425,7 +2277,138 @@ const $$module1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty(
   url: $$url$4
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const $$metadata$3 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/hero-image.astro", { modules: [{ module: $$module1$1, specifier: "astro-eleventy-img", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const defaultOptions$1 = {
+  outputDir: "public/assets/images",
+  urlPath: "/assets/images"
+};
+function generateImage(src, options) {
+  const settings = Object.assign(defaultOptions$1, options);
+  (async () => {
+    await Image__default(src, settings);
+  })();
+  return Image__default.statsSync(src, settings);
+}
+
+const $$module2$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  generateImage
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const cjs = createRequire(import.meta.url);
+const sharp = cjs("sharp");
+const DataURIParser = cjs("datauri/parser");
+const cache = {};
+const defaultOptions = {
+  quality: 60,
+  outputDir: "src/assets/placeholders"
+};
+async function generatePlaceholder(src, options = defaultOptions) {
+  options = Object.assign({}, defaultOptions, options);
+  options.outputDir = options.outputDir.endsWith("/") ? options.outputDir : options.outputDir + "/";
+  const hash = getHash({ path: src, options });
+  try {
+    const existingFile = readFileSync(options.outputDir + hash + ".placeholder", {
+      encoding: "utf-8"
+    });
+    return JSON.parse(existingFile);
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      return await getDataURI(src, hash, options);
+    }
+  }
+}
+function getHash(options) {
+  const hash = createHash("sha256");
+  hash.update(JSON.stringify(options));
+  return hash.digest("base64url").substring(0, 5);
+}
+async function getDataURI(src, hash, options) {
+  if (cache[src] && cache[src].quality === options.quality) {
+    return cache[src];
+  }
+  const image = await sharp(src);
+  const imageMetadata = await image.metadata();
+  const placeholderDimension = getBitmapDimensions(imageMetadata.width, imageMetadata.height, options.quality);
+  const buffer = await image.rotate().resize(placeholderDimension.width, placeholderDimension.height).png().toBuffer();
+  const parser = new DataURIParser();
+  const data = {
+    dataURI: parser.format(".png", buffer).content,
+    width: imageMetadata.width,
+    height: imageMetadata.height,
+    quality: options.quality
+  };
+  cache[src] = data;
+  mkdir(options.outputDir, { recursive: true }, (err) => {
+    if (err) {
+      console.error(err);
+    }
+    writeFile(options.outputDir + hash + ".placeholder", JSON.stringify(data), (err2) => {
+      if (err2) {
+        console.error(err2);
+      }
+    });
+  });
+  return data;
+}
+function getBitmapDimensions(imgWidth, imgHeight, pixelTarget) {
+  const ratioWH = imgWidth / imgHeight;
+  let bitmapHeight = pixelTarget / ratioWH;
+  bitmapHeight = Math.sqrt(bitmapHeight);
+  const bitmapWidth = pixelTarget / bitmapHeight;
+  return { width: Math.round(bitmapWidth), height: Math.round(bitmapHeight) };
+}
+
+const $$module3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  generatePlaceholder
+}, Symbol.toStringTag, { value: 'Module' }));
+
+createMetadata("/@fs/Users/jason/Workspace/astro-landing/node_modules/astro-eleventy-img/src/Image.astro", { modules: [{ module: Image, specifier: "@11ty/eleventy-img", assert: {} }, { module: $$module2$2, specifier: "./main", assert: {} }, { module: $$module3, specifier: "./placeholder", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$4 = createAstro("/@fs/Users/jason/Workspace/astro-landing/node_modules/astro-eleventy-img/src/Image.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
+const $$Image = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$4, $$props, $$slots);
+  Astro2.self = $$Image;
+  const { src, alt, caption, options = {}, sizes = "", classes = void 0, quality = 90, placeholderOptions = {} } = Astro2.props;
+  const image = generateImage(
+    src,
+    Object.assign(options, {
+      widths: [null],
+      formats: ["avif", "webp", "png"],
+      sharpWebpOptions: {
+        quality
+      },
+      sharpAvifOptions: {
+        quality
+      }
+    })
+  );
+  const placeHolder = await generatePlaceholder(src, placeholderOptions);
+  const imageAttributes = {
+    alt,
+    sizes,
+    loading: "lazy",
+    decoding: "async",
+    style: `background-size: cover;background-image:url(${placeHolder?.dataURI})`,
+    onload: `this.style.backgroundImage='none'`
+  };
+  const html = Image__default.generateHTML(image, imageAttributes);
+  const props = {
+    class: classes
+  };
+  return renderTemplate`${maybeRenderHead($$result)}<figure${spreadAttributes(props)}>
+	${renderComponent($$result, "Fragment", Fragment, {}, { "default": () => renderTemplate`${markHTMLString(html)}` })}
+	${caption && renderTemplate`<figcaption>${caption}</figcaption>`}
+</figure>`;
+});
+
+const $$module1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  generateImage,
+  generatePlaceholder,
+  Image: $$Image
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const $$metadata$3 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/hero-image.astro", { modules: [{ module: $$module1, specifier: "astro-eleventy-img", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
 const $$Astro$3 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/hero-image.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
 const $$HeroImage = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro$3, $$props, $$slots);
@@ -2460,7 +2443,7 @@ const $$module2$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   url: $$url$3
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const $$metadata$2 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/splash.astro", { modules: [{ module: $$module1, specifier: "~/components/starfield.astro", assert: {} }, { module: $$module2$1, specifier: "~/components/hero-image.astro", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$metadata$2 = createMetadata("/@fs/Users/jason/Workspace/astro-landing/src/components/splash.astro", { modules: [{ module: $$module1$1, specifier: "~/components/starfield.astro", assert: {} }, { module: $$module2$1, specifier: "~/components/hero-image.astro", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
 const $$Astro$2 = createAstro("/@fs/Users/jason/Workspace/astro-landing/src/components/splash.astro", "https://astro-portfolio-gilt.vercel.app/", "file:///Users/jason/Workspace/astro-landing/");
 const $$Splash = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro$2, $$props, $$slots);
@@ -2675,7 +2658,7 @@ function deserializeManifest(serializedManifest) {
   };
 }
 
-const _manifest = Object.assign(deserializeManifest({"adapterName":"@astrojs/vercel/serverless","routes":[{"file":"","links":["assets/index.32c313d9.css"],"scripts":[{"type":"external","value":"hoisted.b2d89190.js"}],"routeData":{"route":"/","type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","_meta":{"trailingSlash":"ignore"}}}],"site":"https://astro-portfolio-gilt.vercel.app/","base":"/","markdown":{"drafts":false,"syntaxHighlight":"shiki","shikiConfig":{"langs":[],"theme":"github-dark","wrap":false},"remarkPlugins":[],"rehypePlugins":[],"remarkRehype":{},"extendDefaultPlugins":false,"isAstroFlavoredMd":false},"pageMap":null,"renderers":[],"entryModules":{"\u0000@astrojs-ssr-virtual-entry":"entry.js","/astro/hoisted.js?q=0":"hoisted.b2d89190.js","astro:scripts/before-hydration.js":"data:text/javascript;charset=utf-8,//[no before-hydration script]"},"assets":["/assets/index.32c313d9.css","/favicon.ico","/favicon.svg","/hoisted.b2d89190.js","/social.jpg","/assets/images/astronaut/yLnzHhqALK-450.avif","/assets/images/astronaut/yLnzHhqALK-450.png","/assets/images/astronaut/yLnzHhqALK-450.webp","/assets/images/astronaut/yLnzHhqALK-800.avif","/assets/images/astronaut/yLnzHhqALK-800.png","/assets/images/astronaut/yLnzHhqALK-800.webp","/assets/images/hero/gDdfI9LZ83-1200.avif","/assets/images/hero/gDdfI9LZ83-1200.jpeg","/assets/images/hero/gDdfI9LZ83-1200.webp","/assets/images/hero/gDdfI9LZ83-450.avif","/assets/images/hero/gDdfI9LZ83-450.jpeg","/assets/images/hero/gDdfI9LZ83-450.webp","/assets/images/hero/gDdfI9LZ83-800.avif","/assets/images/hero/gDdfI9LZ83-800.jpeg","/assets/images/hero/gDdfI9LZ83-800.webp","/assets/images/hero/zNPh6foJwQ-1200.avif","/assets/images/hero/zNPh6foJwQ-1200.jpeg","/assets/images/hero/zNPh6foJwQ-1200.webp","/assets/images/hero/zNPh6foJwQ-450.avif","/assets/images/hero/zNPh6foJwQ-450.jpeg","/assets/images/hero/zNPh6foJwQ-450.webp","/assets/images/hero/zNPh6foJwQ-800.avif","/assets/images/hero/zNPh6foJwQ-800.jpeg","/assets/images/hero/zNPh6foJwQ-800.webp","/assets/images/showcase/VBzvsHZFNn-450.avif","/assets/images/showcase/VBzvsHZFNn-450.png","/assets/images/showcase/VBzvsHZFNn-450.webp","/assets/images/showcase/VBzvsHZFNn-800.avif","/assets/images/showcase/VBzvsHZFNn-800.png","/assets/images/showcase/VBzvsHZFNn-800.webp","/assets/images/showcase/XL4LjefiVn-450.avif","/assets/images/showcase/XL4LjefiVn-450.png","/assets/images/showcase/XL4LjefiVn-450.webp","/assets/images/showcase/XL4LjefiVn-800.avif","/assets/images/showcase/XL4LjefiVn-800.png","/assets/images/showcase/XL4LjefiVn-800.webp","/assets/images/showcase/XsJjJNVoLY-450.avif","/assets/images/showcase/XsJjJNVoLY-450.png","/assets/images/showcase/XsJjJNVoLY-450.webp","/assets/images/showcase/XsJjJNVoLY-800.avif","/assets/images/showcase/XsJjJNVoLY-800.png","/assets/images/showcase/XsJjJNVoLY-800.webp","/assets/images/showcase/Yu0_jHmtiW-348.avif","/assets/images/showcase/Yu0_jHmtiW-348.png","/assets/images/showcase/Yu0_jHmtiW-348.webp","/assets/images/showcase/_IPbM6qIYI-450.avif","/assets/images/showcase/_IPbM6qIYI-450.png","/assets/images/showcase/_IPbM6qIYI-450.webp","/assets/images/showcase/_IPbM6qIYI-800.avif","/assets/images/showcase/_IPbM6qIYI-800.png","/assets/images/showcase/_IPbM6qIYI-800.webp","/assets/images/showcase/g9vYzfI0uj-450.avif","/assets/images/showcase/g9vYzfI0uj-450.png","/assets/images/showcase/g9vYzfI0uj-450.webp","/assets/images/showcase/g9vYzfI0uj-800.avif","/assets/images/showcase/g9vYzfI0uj-800.png","/assets/images/showcase/g9vYzfI0uj-800.webp","/assets/images/showcase/kZtoOWPTn5-450.avif","/assets/images/showcase/kZtoOWPTn5-450.png","/assets/images/showcase/kZtoOWPTn5-450.webp","/assets/images/showcase/kZtoOWPTn5-800.avif","/assets/images/showcase/kZtoOWPTn5-800.png","/assets/images/showcase/kZtoOWPTn5-800.webp","/assets/images/showcase/yA2q_yIsp6-450.avif","/assets/images/showcase/yA2q_yIsp6-450.png","/assets/images/showcase/yA2q_yIsp6-450.webp","/assets/images/showcase/yA2q_yIsp6-800.avif","/assets/images/showcase/yA2q_yIsp6-800.png","/assets/images/showcase/yA2q_yIsp6-800.webp","/assets/images/showcase/yC-dmJk7dD-450.avif","/assets/images/showcase/yC-dmJk7dD-450.png","/assets/images/showcase/yC-dmJk7dD-450.webp","/assets/images/showcase/yC-dmJk7dD-800.avif","/assets/images/showcase/yC-dmJk7dD-800.png","/assets/images/showcase/yC-dmJk7dD-800.webp"]}), {
+const _manifest = Object.assign(deserializeManifest({"adapterName":"@astrojs/vercel/serverless","routes":[{"file":"","links":["assets/index.32c313d9.css"],"scripts":[{"type":"external","value":"hoisted.47a8402d.js"}],"routeData":{"route":"/","type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","_meta":{"trailingSlash":"ignore"}}}],"site":"https://astro-portfolio-gilt.vercel.app/","base":"/","markdown":{"drafts":false,"syntaxHighlight":"shiki","shikiConfig":{"langs":[],"theme":"github-dark","wrap":false},"remarkPlugins":[],"rehypePlugins":[],"remarkRehype":{},"extendDefaultPlugins":false,"isAstroFlavoredMd":false},"pageMap":null,"renderers":[],"entryModules":{"\u0000@astrojs-ssr-virtual-entry":"entry.js","/astro/hoisted.js?q=0":"hoisted.47a8402d.js","astro:scripts/before-hydration.js":"data:text/javascript;charset=utf-8,//[no before-hydration script]"},"assets":["/assets/index.32c313d9.css","/favicon.ico","/favicon.svg","/hoisted.47a8402d.js","/social.jpg","/assets/images/astronaut/yLnzHhqALK-450.avif","/assets/images/astronaut/yLnzHhqALK-450.png","/assets/images/astronaut/yLnzHhqALK-450.webp","/assets/images/astronaut/yLnzHhqALK-800.avif","/assets/images/astronaut/yLnzHhqALK-800.png","/assets/images/astronaut/yLnzHhqALK-800.webp","/assets/images/hero/gDdfI9LZ83-1200.avif","/assets/images/hero/gDdfI9LZ83-1200.jpeg","/assets/images/hero/gDdfI9LZ83-1200.webp","/assets/images/hero/gDdfI9LZ83-450.avif","/assets/images/hero/gDdfI9LZ83-450.jpeg","/assets/images/hero/gDdfI9LZ83-450.webp","/assets/images/hero/gDdfI9LZ83-800.avif","/assets/images/hero/gDdfI9LZ83-800.jpeg","/assets/images/hero/gDdfI9LZ83-800.webp","/assets/images/hero/zNPh6foJwQ-1200.avif","/assets/images/hero/zNPh6foJwQ-1200.jpeg","/assets/images/hero/zNPh6foJwQ-1200.webp","/assets/images/hero/zNPh6foJwQ-450.avif","/assets/images/hero/zNPh6foJwQ-450.jpeg","/assets/images/hero/zNPh6foJwQ-450.webp","/assets/images/hero/zNPh6foJwQ-800.avif","/assets/images/hero/zNPh6foJwQ-800.jpeg","/assets/images/hero/zNPh6foJwQ-800.webp","/assets/images/showcase/VBzvsHZFNn-450.avif","/assets/images/showcase/VBzvsHZFNn-450.png","/assets/images/showcase/VBzvsHZFNn-450.webp","/assets/images/showcase/VBzvsHZFNn-800.avif","/assets/images/showcase/VBzvsHZFNn-800.png","/assets/images/showcase/VBzvsHZFNn-800.webp","/assets/images/showcase/XL4LjefiVn-450.avif","/assets/images/showcase/XL4LjefiVn-450.png","/assets/images/showcase/XL4LjefiVn-450.webp","/assets/images/showcase/XL4LjefiVn-800.avif","/assets/images/showcase/XL4LjefiVn-800.png","/assets/images/showcase/XL4LjefiVn-800.webp","/assets/images/showcase/XsJjJNVoLY-450.avif","/assets/images/showcase/XsJjJNVoLY-450.png","/assets/images/showcase/XsJjJNVoLY-450.webp","/assets/images/showcase/XsJjJNVoLY-800.avif","/assets/images/showcase/XsJjJNVoLY-800.png","/assets/images/showcase/XsJjJNVoLY-800.webp","/assets/images/showcase/Yu0_jHmtiW-348.avif","/assets/images/showcase/Yu0_jHmtiW-348.png","/assets/images/showcase/Yu0_jHmtiW-348.webp","/assets/images/showcase/_IPbM6qIYI-450.avif","/assets/images/showcase/_IPbM6qIYI-450.png","/assets/images/showcase/_IPbM6qIYI-450.webp","/assets/images/showcase/_IPbM6qIYI-800.avif","/assets/images/showcase/_IPbM6qIYI-800.png","/assets/images/showcase/_IPbM6qIYI-800.webp","/assets/images/showcase/g9vYzfI0uj-450.avif","/assets/images/showcase/g9vYzfI0uj-450.png","/assets/images/showcase/g9vYzfI0uj-450.webp","/assets/images/showcase/g9vYzfI0uj-800.avif","/assets/images/showcase/g9vYzfI0uj-800.png","/assets/images/showcase/g9vYzfI0uj-800.webp","/assets/images/showcase/kZtoOWPTn5-450.avif","/assets/images/showcase/kZtoOWPTn5-450.png","/assets/images/showcase/kZtoOWPTn5-450.webp","/assets/images/showcase/kZtoOWPTn5-800.avif","/assets/images/showcase/kZtoOWPTn5-800.png","/assets/images/showcase/kZtoOWPTn5-800.webp","/assets/images/showcase/lW3CvKRVaX-450.avif","/assets/images/showcase/lW3CvKRVaX-450.png","/assets/images/showcase/lW3CvKRVaX-450.webp","/assets/images/showcase/lW3CvKRVaX-800.avif","/assets/images/showcase/lW3CvKRVaX-800.png","/assets/images/showcase/lW3CvKRVaX-800.webp","/assets/images/showcase/yA2q_yIsp6-450.avif","/assets/images/showcase/yA2q_yIsp6-450.png","/assets/images/showcase/yA2q_yIsp6-450.webp","/assets/images/showcase/yA2q_yIsp6-800.avif","/assets/images/showcase/yA2q_yIsp6-800.png","/assets/images/showcase/yA2q_yIsp6-800.webp","/assets/images/showcase/yC-dmJk7dD-450.avif","/assets/images/showcase/yC-dmJk7dD-450.png","/assets/images/showcase/yC-dmJk7dD-450.webp","/assets/images/showcase/yC-dmJk7dD-800.avif","/assets/images/showcase/yC-dmJk7dD-800.png","/assets/images/showcase/yC-dmJk7dD-800.webp"]}), {
 	pageMap: pageMap,
 	renderers: renderers
 });
